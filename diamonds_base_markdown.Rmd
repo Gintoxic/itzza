@@ -1,0 +1,67 @@
+---
+title: "Datensatz Diamonds mit Base R"
+author: "Eugene"
+date: "Monday, May 01, 2017"
+output: html_document
+---
+
+Bei dem vorliegenden Datensatz handelt es sich um ~54 Tsd. Diamanten. Eine Referenz dazu finden Sie hier: <http://ggplot2.tidyverse.org/reference/diamonds.html>.
+
+```{r, echo=FALSE}
+library(ggplot2)
+data("diamonds")
+```
+
+Mid dem Befehl "head" können Sie sich die ersten Zeilen des Datensatzes anzeigen lassen.
+```{r}
+head(diamonds)
+```
+
+Dieser Befehl erzeugt einen Scatterplot:
+
+```{r}
+plot(diamonds$carat,diamonds$price)
+```
+
+Durch zusätzliche Parameter können wir die Aussagekraft des Plots deutlich erhöhen.
+
+```{r}
+plot(diamonds$carat,
+     diamonds$price, 
+     pch=20,  
+     cex=0.8, 
+     col=diamonds$clarity, 
+     main="Preis von Diamanten nach Gewicht", 
+     xlab="Gewicht in Carat", 
+     ylab="Preis in $")
+```
+
+Der Aufbau komplexerer Grafiken erfordert in Base-R einen deutlich größeren Aufwand.
+
+```{r, echo=FALSE}
+clarity.all<-levels(diamonds$clarity)
+ 
+par(mfrow=c(3,3))
+for (i in 1:8)
+{
+  diamonds$clarity.string<-as.character(diamonds$clarity)
+  rainbow8<-rainbow(8)
+  clarity.sel<-clarity.all[i]
+  ind<-which(diamonds$clarity.string==clarity.sel)
+  
+  diamonds.sub<-diamonds[ind,]
+  
+  plot(diamonds.sub$carat,
+       diamonds.sub$price,
+       col=rainbow8[i], 
+       main = paste("Clarity",clarity.sel), 
+       pch=20, 
+       cex=2,
+       xlim=c(0,5), ylim=c(0,20000), 
+       xaxs="i", yaxs="i", 
+       xlab="carat", ylab="price")
+  
+  
+  
+  }
+```

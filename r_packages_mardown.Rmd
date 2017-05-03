@@ -1,0 +1,83 @@
+---
+title: "[R] - Vom Geheimtipp zum Standard"
+---
+
+Als unabhängiges IT-Beratungsunternehmen sind wir stets bemüht unseren Kunden die beste Lösung für ihre Fragestellung anbieten zu können. So ist es  nur naheliegend, dass wir neben den bewährten Produkten, uns auch über die Trends der Branche auf dem Laufenden halten. In den Vergangenen Jahren hat eine Skriptsprache zunehmend an Bedeutung gewonnen: [R]. So hat die amerikanische Tech-Zeitschrift IEEE Spectrum (<http://spectrum.ieee.org>) im Ranking von 2016 [R] auf dem Platz fünf der Top Programmiersprachen aufgeführt. 
+
+Wie kommt es zum Erfolg von [R] und was sie die Vorteile gegenüber anderen Werkzeuge zur Datenanalyse? [R] ist bereits seit den 1990er Jahren ein Geheimtipp in unter Statistikern. Die Version 1.0.0. erschien im Februar 2000 unter der GNU Public Licence. Einige Jahre später, 2005, kam CRAN (Comprehensive R Archive Network).  Dort werden R-Pakete verwaltet und können schnell und einfach direkt in [R] heruntergeladen und installiert werden. Im folgenden Jahr kamen vier Pakete dazu, im Jahr darauf nur zwei. Erst in 2011 / 2012 kam es zu einem nahezu explosionsartigen Wachstum. Mittlerweile sind über 10.517 Pakete (Stand 2. Mai 2017) auf CRAN verfügbar. [R], ursprünglich eine reine Statiksprache, wurde zum Mittel der Wahl von zahlreichen Mathematikern, Datenwissenschaftlern und Programmierern rund um den Globus.
+
+Einen wesentlichen Beitrag dazu leistete das 2011 gegründete Unternehmen RStudio(<https://www.rstudio.com>). Die gleichnamige Entwicklungsumgebung löste weniger ausgereifte Editoren (u.a. Tinn-R) und wurde zum Standardwerkzeug  zur Interaktion mit [R]. Heute bietet es neben einer reinen Entwicklungsumgebung auch die Möglichkeit mit Hilfe von R-Markdown seine Ergebnisse und Charts, auf Wunsch mit Quellcode, als Publikationen und Präsentationen zu veröffentlichen. Mit dem Paket Shiny von RStudio läßt sich R als flexibles Reporting-Tool verwenden.
+
+Durch seine (meist) intuitive Syntax und enormen Funktionsumfang der R-Pakete sehe ich [R] als bestens gewappnet für die Herausforderungen des 21. Jahrhunderts und freue mich darauf es bei einer bevorstehenden Veranstaltung meinen Kollegen näher zu bringen.
+
+Eine kleine Kostprobe? Dieser Beitrag wurde vollständig in R-Markdown erstellt.
+
+
+```{r}
+#Benötigte Pakete laden
+library(xml2)
+library(rvest)
+library(png)
+
+#Aktuelle Paketübersicht von der CRAN-Webseite herunterladen
+url <- "https://cran.r-project.org/web/packages/available_packages_by_date.html"
+datei<-read_html(url)
+tabellen<-html_nodes(datei, "table")
+rpakete <- html_table(tabellen[1], fill = TRUE)
+df <- data.frame(matrix(unlist(rpakete), ncol=3))
+
+#Jahr per substr bestimmen
+df$jahr<-substr(x = df[,1], start = 1,stop = 4)
+
+#Jahresübersicht erzeugen
+jahresuebersicht<-table(df$jahr)
+
+#Y-Achsenlimit festlegen
+ylimit<-max(jahresuebersicht)*1.1
+
+#Balkendiagramm mit Titel erzeugen
+mids<-barplot(jahresuebersicht
+              , ylim = c(0, ylimit)
+              , yaxt="n"
+              , col="#fd9602"
+              , main="Anzahl R Pakete auf CRAN nach Jahr der Veröffentlichung"
+              , sub="Stand 2. Mai 2017"
+              , cex.names=0.8)
+
+#Balkenbeschriftung einfügen
+text(x = mids
+     , y = jahresuebersicht
+     , labels = prettyNum(jahresuebersicht, big.mark = ".", decimal.mark = ",")
+     , pos=3
+     , cex = 0.8)
+
+#Logo herunterladen und einfügen
+temp<-tempfile()
+download.file("https://www.decadis.de/images/default/Decadis_Logo_transparent_v2_x250.png",temp,mode="wb")
+logo = readPNG(temp)
+
+usr<-par("usr")
+gr<-(usr[2]-usr[3])/(usr[4]-usr[1])
+kl<-dim(logo)[1]/dim(logo)[2]
+
+rasterImage(image=logo
+            , xleft=mids[1]
+            , xright=mids[4] 
+            , ytop=ylimit
+            , ybottom=(ylimit-(mids[4]-mids[1])*kl*2/gr)
+)
+```
+
+
+P.S. Kennen Sie schon das Paket ggplot2 (<http://ggplot2.org/>) von Hadley Wickham?
+
+```{r}
+library(ggplot2)
+ggplot(diamonds, aes(x=carat, y=price, color=clarity, alpha=.2)) + geom_point() + facet_wrap(~clarity)
+ggplot(diamonds, aes(x=color, y=price, color=clarity, fill=clarity, alpha=.2)) + geom_violin() + scale_y_log10() + facet_wrap(~ clarity)
+
+```
+
+Eugene Harschack
+
+
