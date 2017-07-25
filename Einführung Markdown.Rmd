@@ -1,0 +1,50 @@
+---
+title: "R-"
+author: "Eugene Harschack"
+date: "16 Juli 2017"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r mtcars}
+class(mtcars)
+dim(mtcars)
+str(mtcars)
+head(mtcars)
+summary(mtcars)
+colnames(mtcars)
+```
+
+
+
+```{r mtcars_plots}
+library(dplyr)
+library(d3heatmap)
+
+ mtcars$names<-rownames(mtcars)
+
+ plot(mtcars$hp,mtcars$mpg)
+ barplot(mtcars$mpg)
+ text(mtcars$mpg,mtcars$hp,rownames(mtcars))
+ 
+ mtc<-arrange(mtcars, mpg)
+ mids<-barplot(mtc$mpg)
+ text(mids,mtc$mpg, round(mtc$mpg), pos = 3, cex=0.8)
+ axis(side=1, at=mids, labels=mtc$names, las=2)
+ 
+ mtc<-arrange(mtcars, hp)
+ mids<-barplot(mtc$hp)
+ text(mids,mtc$hp, round(mtc$hp), pos = 3, cex=0.8)
+ axis(side=1, at=mids, labels=mtc$names, las=2)
+ 
+ d3heatmap(mtc)
+ 
+```
+
+
