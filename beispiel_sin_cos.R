@@ -87,6 +87,32 @@ points(x[ind], y1[ind], col="red")
 ###################################
 ###################################
 
+# Polygone
+
+y_max<-NULL
+y_min<-NULL
+for (i in 1:length(x))
+{
+  y_max[i]<-max(y1[i],y2[i])
+  y_min[i]<-min(y1[i],y2[i])
+  
+}
+
+xx<-c(x,rev(x))
+yy<-c(y_min, rev(y_max))
+
+plot(x,y1, type="l")
+
+polygon(xx,yy, col="red")
+
+
+###################################
+
+
+
+
+
+# Farbspielereien
 n=100
 barplot(rep(1,n), border = F)
 
