@@ -1,5 +1,5 @@
 ---
-title: "R-"
+title: "R-Einführung"
 author: "Eugene Harschack"
 date: "16 Juli 2017"
 output: html_document
@@ -25,11 +25,8 @@ colnames(mtcars)
 
 ```{r mtcars_plots}
 library(dplyr)
-library(d3heatmap)
-
  mtcars$names<-rownames(mtcars)
 
- plot(mtcars$hp,mtcars$mpg)
  barplot(mtcars$mpg)
  text(mtcars$mpg,mtcars$hp,rownames(mtcars))
  
@@ -43,8 +40,26 @@ library(d3heatmap)
  text(mids,mtc$hp, round(mtc$hp), pos = 3, cex=0.8)
  axis(side=1, at=mids, labels=mtc$names, las=2)
  
- d3heatmap(mtc)
- 
+mtcars$lphkm<-(100*3.785411784) / (1.609344*mtcars$mpg)
+  
+plot(mtcars$hp,mtcars$lphkm)
+mod<-lm(data=mtcars, formula= lphkm~hp)
+
+x=min(mtcars$hp):max(mtcars$hp)
+y=mod$coefficients[1]+mod$coefficients[2]*x
+
+lines(x,y, col="red")
+
+plot(mtcars$hp,mtcars$lphkm, pch=20, col="grey70")
+lines(x,y, col="red")
+text(mtcars$hp, mtcars$lphkm, mtcars$names, cex=0.7, pos=3)
+  
+plot(mtcars$hp,mtcars$lphkm, pch=20, col="grey70", 
+     xlim=c(min(mtcars$hp)*0.9, max(mtcars$hp)*1.1),
+     ylim=c(min(mtcars$lphkm)*0.9, max(mtcars$lphkm)*1.1))
+lines(x,y, col="red")
+text(mtcars$hp, mtcars$lphkm, mtcars$names, cex=0.7, pos=3)
+
 ```
 
 
